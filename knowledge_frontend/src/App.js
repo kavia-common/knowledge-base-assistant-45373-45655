@@ -336,16 +336,19 @@ function App() {
       ) : null}
       {/* Result or Error */}
       {uploadResult && (
-        <div style={{ marginTop: 20, color: 'green', fontWeight: 600 }}>
-          ✅ Uploaded successfully!<br/>
+        <div className="success" style={{
+          marginTop: 19, borderRadius: 7, padding: "10px 11px", background: "var(--success-bg)",
+          color: "#257b40", fontWeight: 600
+        }}>
+          <span role="img" aria-label="success">✅</span> Uploaded successfully!
           <pre style={{
-            textAlign: "left", background: "rgba(60,180,60,0.08)", borderRadius: 8, padding: 8, fontSize: 13, marginTop: 6
+            textAlign: "left", background: "rgba(60,180,60,0.08)", borderRadius: 8, padding: 8, fontSize: 13, marginTop: 7, marginBottom: 2
           }}>{JSON.stringify(uploadResult, null, 2)}</pre>
         </div>
       )}
       {uploadError && (
-        <div style={{ marginTop: 20, color: 'red', fontWeight: 600 }}>
-          ❌ {uploadError}
+        <div className="error" style={{ marginTop: 19, background: "var(--error-bg)", color: "var(--error-color)" }}>
+          <span role="img" aria-label="error">❌</span> {uploadError}
         </div>
       )}
     </div>

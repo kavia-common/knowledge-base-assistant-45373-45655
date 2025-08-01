@@ -1,13 +1,44 @@
 /* CSS Variables for Theme Management */
 :root {
-  /* Light theme colors */
+  /* Brand + Light theme colors */
+  --primary-color: #004080;
+  --secondary-color: #00B4D8;
+  --accent-color: #FFB300;
   --bg-primary: #ffffff;
-  --bg-secondary: #f8f9fa;
-  --text-primary: #282c34;
-  --text-secondary: #61dafb;
-  --border-color: #e9ecef;
-  --button-bg: #007bff;
+  --bg-secondary: #f6f8fa;
+  --text-primary: #1a2330;
+  --text-secondary: var(--secondary-color);
+  --text-accent: var(--accent-color);
+  --border-color: #e3e6e8;
+  --button-bg: var(--primary-color);
   --button-text: #ffffff;
+  --error-bg: #ffe8e3;
+  --success-bg: #eafcea;
+  --error-color: #c92a2a;
+  --radius-main: 14px;
+  --radius-full: 99px;
+  --shadow: 0 4px 22px -6px rgba(0,32,64,0.11);
+}
+
+[data-theme="dark"] {
+  /* Dark theme colors */
+  --primary-color: #319ED6;
+  --secondary-color: #4EDDED;
+  --accent-color: #FFB300;
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #22252e;
+  --text-primary: #ffffff;
+  --text-secondary: var(--secondary-color);
+  --text-accent: var(--accent-color);
+  --border-color: #3c4250;
+  --button-bg: var(--primary-color);
+  --button-text: #fff;
+  --error-bg: #321619;
+  --success-bg: #153b21;
+  --error-color: #ff8888;
+  --radius-main: 14px;
+  --radius-full: 99px;
+  --shadow: 0 4px 22px -6px rgba(0,64,120,0.19);
 }
 
 [data-theme="dark"] {
@@ -23,15 +54,23 @@
 
 .App {
   text-align: center;
-  background-color: var(--bg-primary);
+  background: var(--bg-primary);
   color: var(--text-primary);
   min-height: 100vh;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: "Inter", "Segoe UI", "Roboto", Arial, sans-serif;
+  transition: background-color 0.2s, color 0.2s;
 }
 
 .App-logo {
-  height: 40vmin;
+  height: 50px;
+  margin-bottom: 12px;
   pointer-events: none;
+  filter: contrast(0.93);
+}
+@media (min-width: 600px) {
+  .App-logo {
+    height: 65px;
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -41,64 +80,194 @@
 }
 
 .App-header {
-  background-color: var(--bg-secondary);
+  background: var(--bg-secondary);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   font-size: calc(10px + 2vmin);
   color: var(--text-primary);
-  transition: background-color 0.3s ease;
+  transition: background 0.24s;
   position: relative;
+  padding-top: 85px;
+  padding-bottom: 43px;
 }
 
 .App-link {
   color: var(--text-secondary);
-  transition: color 0.3s ease;
+  text-decoration: none;
+  font-weight: 500;
+  margin-top: 20px;
+  letter-spacing: 0.01em;
+  transition: color 0.22s;
+}
+.App-link:hover {
+  color: var(--accent-color);
 }
 
 .theme-toggle {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  background-color: var(--button-bg);
+  top: 22px;
+  right: 22px;
+  background: var(--button-bg);
   color: var(--button-text);
   border: none;
-  border-radius: 8px;
-  padding: 10px 20px;
-  font-size: 14px;
+  border-radius: var(--radius-main);
+  padding: 10px 21px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background 0.22s, color 0.19s, box-shadow 0.22s;
+  box-shadow: 0 2px 15px 0 rgba(0,0,0,0.11);
+  outline: none;
 }
-
+.theme-toggle:focus, .theme-toggle:active {
+  outline: 2.5px solid var(--accent-color);
+  outline-offset: 1px;
+}
 .theme-toggle:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  opacity: 0.9;
+  opacity: .92;
+  background: var(--secondary-color);
+  color: var(--primary-color);
 }
 
-.theme-toggle:active {
-  transform: translateY(0);
+/* General Button */
+.btn, .upload-area button, .modal button, .onboarding-modal button {
+  border: none;
+  border-radius: var(--radius-main);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.01em;
+  padding: 9px 21px;
+  background: var(--button-bg);
+  color: var(--button-text);
+  box-shadow: 0 1px 7px 0 rgba(0,32,64,0.07);
+  transition: background 0.23s, color 0.19s, opacity 0.16s;
+}
+.btn:active, .upload-area button:active {
+  opacity: 0.92;
+}
+.btn:focus {
+  outline: 2.5px solid var(--accent-color);
+  outline-offset: 1px;
+}
+.btn[disabled], .btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+hr {
+  border: none;
+  border-bottom: 1.2px solid var(--border-color);
 }
 
-/* Responsive design for mobile */
+input, select, textarea {
+  font-family: inherit;
+  outline: none;
+  border-radius: var(--radius-main);
+  transition: border 0.18s, box-shadow 0.17s;
+}
+input:focus, textarea:focus{
+  border: 1.6px solid var(--text-secondary)!important;
+  box-shadow: 0 0 3px 0 var(--border-color);
+}
+
+/* Upload Area */
+.upload-area {
+  border: 2px dashed var(--border-color);
+  background: var(--bg-primary);
+  border-radius: var(--radius-main);
+  padding: 2rem 1.5rem;
+  min-height: 120px;
+  max-width: 410px;
+  margin: 24px auto 34px auto;
+  box-shadow: var(--shadow);
+  position: relative;
+  width: 100%;
+  z-index: 1;
+  transition: border 0.16s, background 0.17s;
+}
+.upload-area[drag-active="true"], .upload-area.active {
+  border: 2.3px solid var(--text-secondary);
+  background: var(--bg-secondary);
+  box-shadow: 0 0 18px 0 rgba(0,180,216,0.09);
+}
+
+.upload-area input[type=file] {
+  display: none;
+}
+
+.upload-area .upload-feedback {
+  font-size: 13.3px;
+  color: var(--text-secondary);
+  font-weight: 400;
+  margin-top: 8px;
+}
+
+.upload-area .upload-progress-bar {
+  margin-top: 22px;
+  width: 92%;
+  height: 12px;
+  background: #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-left: auto;
+  margin-right: auto;
+}
+.upload-area .progress-inner {
+  height: 100%;
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--button-bg) 60%, var(--text-secondary));
+  transition: width 0.28s;
+}
+
+.upload-area .success {
+  color: #257b40;
+  margin-top: 18px;
+  font-weight: 600;
+  background: var(--success-bg);
+}
+.upload-area .error, .error-message, .chart-visualization .error, .reference-list .error {
+  color: var(--error-color);
+  margin-top: 19px;
+  font-weight: 600;
+  background: var(--error-bg);
+  padding: 8px 12px;
+  border-radius: 9px;
+  text-align: center;
+}
+
+.chart-visualization, .reference-list {
+  box-shadow: var(--shadow);
+  transition: background 0.18s, box-shadow 0.18s;
+}
+
+.history-modal-backdrop, .onboarding-modal-backdrop {
+  z-index: 10000;
+}
+
+/* For mobile responsiveness */
 @media (max-width: 768px) {
   .theme-toggle {
     top: 10px;
     right: 10px;
-    padding: 8px 16px;
-    font-size: 12px;
+    padding: 8px 14px;
+    font-size: 13px;
   }
+  .App-header {
+    padding-top: 61px;
+    font-size: 16px;
+  }
+  .upload-area {
+    padding: 1.2rem 0.7rem;
+    min-height: 85px;
+  }
+}
+
+/* Animations */
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg);}
+  to { transform: rotate(360deg);}
 }
