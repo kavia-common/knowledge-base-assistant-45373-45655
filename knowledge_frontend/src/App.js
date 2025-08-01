@@ -3,7 +3,8 @@ import logo from './logo.svg';
 import './App.css';
 import { uploadFile, submitQuery } from './api';
 import { ChartVisualization, ReferenceList } from "./ChartAndReference";
-
+import { QueryHistoryPanel } from "./QueryHistoryPanel";
+import { OnboardingModal } from "./OnboardingModal";
 /**
  * App - Main frontend component.
  * Includes theme switcher, file upload UI, and a search/query interface linked to the backend.
@@ -25,10 +26,28 @@ function App() {
   const [queryError, setQueryError] = useState('');
   const [answerResult, setAnswerResult] = useState(null);
 
+  // Query history panel/modal
+  const [showHistoryPanel, setShowHistoryPanel] = useState(false);
+
+  // Onboarding modal
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
   // Effect to apply theme to document element
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
+
+  // On mount, show onboarding if not dismissed
+  useEffect(() => {
+    if (localStorage.getItem("kba-onboarded") !== "true") {
+      setShowOnboarding(true);
+    }
+  }, []);
+
+  const handleFinishOnboarding = () => {
+    setShowOnboarding(false);
+    localStorage.setItem("kba-onboarded", "true");
+  };
 
   // PUBLIC_INTERFACE
   const toggleTheme = () => {
@@ -338,6 +357,30 @@ function App() {
         >
           {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
         </button>
+
+        {/* Query History Button */}
+        <button
+          onClick={() => setShowHistoryPanel(true)}
+          style={{
+            position: 'absolute',
+            top: 22,
+            left: 24,
+            background: 'var(--button-bg)',
+            color: 'var(--button-text)',
+            border: 'none',
+            borderRadius: 8,
+            fontWeight: 600,
+            fontSize: 15,
+            padding: '8px 16px',
+            zIndex: 30,
+            cursor: 'pointer',
+            boxShadow: '0 1px 8px 0 rgba(0,0,0,0.08)'
+          }}
+          aria-label="Open query history"
+        >
+          🕓 History
+        </button>
+
         <img src={logo} className="App-logo" alt="logo" />
         <p>
           <span style={{ fontWeight: 600, fontSize: 23 }}>
@@ -369,6 +412,12 @@ function App() {
           Learn React
         </a>
       </header>
+
+      {/* History Sidebar/Modal */}
+      <QueryHistoryPanel open={showHistoryPanel} onClose={() => setShowHistoryPanel(false)} />
+      
+      {/* Onboarding Modal */}
+      <OnboardingModal open={showOnboarding} onClose={handleFinishOnboarding} />
     </div>
   );
 }
