@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { uploadFile } from './api';
+import { uploadFile, submitQuery } from './api';
 
 /**
  * App - Main frontend component.
- * Includes theme switcher and a file upload UI with backend integration.
+ * Includes theme switcher, file upload UI, and a search/query interface linked to the backend.
  */
 function App() {
   const [theme, setTheme] = useState('light');
@@ -17,6 +17,12 @@ function App() {
   const [uploadError, setUploadError] = useState('');
   const [uploading, setUploading] = useState(false);
   const inputRef = useRef();
+
+  // Q&A search bar UI states
+  const [query, setQuery] = useState('');
+  const [queryLoading, setQueryLoading] = useState(false);
+  const [queryError, setQueryError] = useState('');
+  const [answerResult, setAnswerResult] = useState(null);
 
   // Effect to apply theme to document element
   useEffect(() => {
@@ -90,6 +96,143 @@ function App() {
       handleFileSelected(e.dataTransfer.files[0]);
     }
   };
+  // Q&A search bar submit handler
+  // PUBLIC_INTERFACE
+  const handleQuerySubmit = async (e) => {
+    e.preventDefault();
+    setQueryError('');
+    setAnswerResult(null);
+    if (!query.trim()) return;
+    setQueryLoading(true);
+    try {
+      const result = await submitQuery(query);
+      setAnswerResult(result);
+    } catch (err) {
+      setQueryError(err?.message || 'Query failed');
+    } finally {
+      setQueryLoading(false);
+    }
+  };
+
+  // Search bar and answer rendering
+  const renderQueryBar = () => (
+    <div
+      className="query-area"
+      style={{
+        width: '100%',
+        maxWidth: 480,
+        margin: '0 auto 32px auto',
+        background: 'var(--bg-secondary)',
+        borderRadius: 16,
+        boxShadow: '0 4px 22px -5px rgba(0,0,0,0.08)',
+        padding: '24px 26px',
+        border: '2px solid var(--border-color)',
+        zIndex: 2
+      }}
+    >
+      <form onSubmit={handleQuerySubmit} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <input
+          type="text"
+          autoComplete="off"
+          placeholder="Ask a question about your knowledge base…"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          disabled={queryLoading}
+          style={{
+            flex: 1,
+            fontSize: 16,
+            border: '1.5px solid var(--border-color)',
+            borderRadius: 8,
+            padding: '12px 13px',
+            outline: 'none',
+            background: 'var(--bg-primary)',
+            color: 'var(--text-primary)',
+          }}
+        />
+        <button
+          type="submit"
+          className="btn"
+          style={{
+            minWidth: 90,
+            padding: '10px 18px',
+            border: 'none',
+            borderRadius: 8,
+            fontWeight: 600,
+            fontSize: 15,
+            cursor: queryLoading ? 'not-allowed' : 'pointer',
+            background: 'var(--button-bg)',
+            color: 'var(--button-text)',
+            opacity: queryLoading ? 0.6 : 1
+          }}
+          disabled={queryLoading}
+        >
+          {queryLoading ? "Searching..." : "Ask"}
+        </button>
+      </form>
+      {queryError && (
+        <div style={{ color: 'red', marginTop: 12, minHeight: 20 }}>{queryError}</div>
+      )}
+
+      {answerResult && (
+        <div style={{ marginTop: 20, textAlign: 'left' }}>
+          <div style={{
+            fontWeight: 600,
+            fontSize: 17,
+            marginBottom: 8,
+            color: 'var(--text-primary)'
+          }}>Answer:</div>
+          <div style={{
+            whiteSpace: 'pre-line',
+            background: 'rgba(50,120,220,0.07)',
+            borderRadius: 8,
+            padding: 14,
+            fontSize: 15.5,
+            color: 'var(--text-primary)'
+          }}>
+            {answerResult.answer}
+          </div>
+          {answerResult.references && answerResult.references.length > 0 && (
+            <div style={{
+              marginTop: 14,
+              fontSize: 15,
+              color: 'var(--text-secondary)'
+            }}>
+              <div style={{ fontWeight: 500, marginBottom: 2 }}>References:</div>
+              <ul style={{ paddingLeft: 16, margin: 0 }}>
+                {answerResult.references.map((ref, i) => (
+                  <li key={i} style={{ marginBottom: 2 }}>
+                    <span style={{
+                      background: 'rgba(0,180,216,0.14)',
+                      borderRadius: 5,
+                      padding: '2px 6px',
+                      fontFamily: 'monospace',
+                      fontSize: 13.5,
+                      fontWeight: 500,
+                      color: 'var(--text-primary)',
+                    }}>{ref}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {answerResult.follow_up_questions && answerResult.follow_up_questions.length > 0 && (
+            <div style={{
+              marginTop: 12,
+              fontSize: 14,
+              color: 'var(--text-secondary)'
+            }}>
+              <span style={{ fontWeight: 500 }}>Follow up questions:</span>
+              <ul style={{ paddingLeft: 16, margin: 0 }}>
+                {answerResult.follow_up_questions.map((q, i) => (
+                  <li key={i} style={{ marginBottom: 2 }}>{q}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
 
   // UI for the file upload area
   const renderUploadArea = () => (
@@ -200,8 +343,13 @@ function App() {
             Knowledge Base Assistant
           </span>
         </p>
+
         {/* File Upload UI */}
         {renderUploadArea()}
+
+        {/* Query/Search Bar */}
+        {renderQueryBar()}
+
         <p>
           Current theme: <strong>{theme}</strong>
         </p>
