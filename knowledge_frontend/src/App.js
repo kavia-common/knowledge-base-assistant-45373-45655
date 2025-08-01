@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { uploadFile, submitQuery } from './api';
+import { ChartVisualization, ReferenceList } from "./ChartAndReference";
 
 /**
  * App - Main frontend component.
@@ -349,6 +350,12 @@ function App() {
 
         {/* Query/Search Bar */}
         {renderQueryBar()}
+
+        {/* Chart Visualization */}
+        <ChartVisualization chartType="bar" />
+
+        {/* References */}
+        <ReferenceList />
 
         <p>
           Current theme: <strong>{theme}</strong>
