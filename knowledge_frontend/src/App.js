@@ -5,6 +5,7 @@ import { uploadFile, submitQuery } from './api';
 import { ChartVisualization, ReferenceList } from "./ChartAndReference";
 import { QueryHistoryPanel } from "./QueryHistoryPanel";
 import { OnboardingModal } from "./OnboardingModal";
+import { AdminPortal } from "./AdminPortal";
 /**
  * App - Main frontend component.
  * Includes theme switcher, file upload UI, and a search/query interface linked to the backend.
@@ -31,6 +32,9 @@ function App() {
 
   // Onboarding modal
   const [showOnboarding, setShowOnboarding] = useState(false);
+
+  // Admin Portal modal visibility state
+  const [showAdmin, setShowAdmin] = useState(false);
 
   // Effect to apply theme to document element
   useEffect(() => {
@@ -358,6 +362,29 @@ function App() {
           {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
         </button>
 
+        {/* Admin Portal Button */}
+        <button
+          onClick={() => setShowAdmin(true)}
+          style={{
+            position: 'absolute',
+            top: 22,
+            right: 140,
+            background: 'var(--button-bg)',
+            color: 'var(--button-text)',
+            border: 'none',
+            borderRadius: 8,
+            fontWeight: 600,
+            fontSize: 15,
+            padding: '8px 16px',
+            zIndex: 30,
+            cursor: 'pointer',
+            boxShadow: '0 1px 8px 0 rgba(0,0,0,0.08)'
+          }}
+          aria-label="Open admin portal"
+        >
+          🛡️ Admin Portal
+        </button>
+
         {/* Query History Button */}
         <button
           onClick={() => setShowHistoryPanel(true)}
@@ -418,6 +445,9 @@ function App() {
       
       {/* Onboarding Modal */}
       <OnboardingModal open={showOnboarding} onClose={handleFinishOnboarding} />
+
+      {/* Admin Portal Modal */}
+      <AdminPortal open={showAdmin} onClose={() => setShowAdmin(false)} />
     </div>
   );
 }
