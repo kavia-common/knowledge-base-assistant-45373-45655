@@ -11,6 +11,17 @@ This project provides a minimal React template with a clean, modern UI and minim
 
 ## Getting Started
 
+**IMPORTANT: Backend API URL configuration**
+
+By default, the frontend expects the backend API to be at `http://localhost:8000`.  
+To connect to the correct backend (especially for remote or cloud deployment), create a `.env` file in `./knowledge_frontend/` with:
+
+```
+REACT_APP_BACKEND_URL=https://your-backend-domain-or-ip:8000
+```
+
+See `.env.example` for a template.
+
 In the project directory, you can run:
 
 ### `npm start`
